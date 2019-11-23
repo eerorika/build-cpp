@@ -40,8 +40,8 @@ image=compile-clang:
   tags: [compile-clang]
   context: compile-clang
   args:
-    BASE: '{project}:compile-base'
-  depends: [compile-base]
+    BASE: '{project}:clang-tools'
+  depends: [clang-tools]
 
 image=compile-gnu:
   image: '{project}'
