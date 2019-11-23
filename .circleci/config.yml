@@ -13,7 +13,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: |
-          curl -L -o /usr/local/bin/dobi \
+          sudo curl -L -o /usr/local/bin/dobi \
             "https://github.com/dnephin/dobi/releases/download/v0.12.0/dobi-$(uname -s)"
           chmod +x /usr/local/bin/dobi
       - run: |
