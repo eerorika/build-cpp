@@ -1,0 +1,60 @@
+# https://dnephin.github.io/dobi/index.html
+---
+meta:
+  project: eerorika/build-cpp
+  default: all
+
+image=runtime:
+  image: '{project}'
+  tags: [runtime]
+  context: runtime
+  args:
+    BASE: 'debian:unstable-slim'
+
+image=runtime-ci:
+  image: '{project}'
+  tags: [runtime-ci]
+  context: runtime-ci
+  args:
+    BASE: '{project}:runtime'
+  depends: [runtime]
+
+image=compile-base:
+  image: '{project}'
+  tags: [compile-base]
+  context: compile-base
+  args:
+    BASE: '{project}:runtime-ci'
+  depends: [runtime-ci]
+
+image=clang-tools:
+  image: '{project}'
+  tags: [clang-tools]
+  context: clang-tools
+  args:
+    BASE: '{project}:compile-base'
+  depends: [compile-base]
+
+image=compile-clang:
+  image: '{project}'
+  tags: [compile-clang]
+  context: compile-clang
+  args:
+    BASE: '{project}:compile-base'
+  depends: [compile-base]
+
+image=compile-gnu:
+  image: '{project}'
+  tags: [compile-gnu]
+  context: compile-gnu
+  args:
+    BASE: '{project}:compile-base'
+  depends: [compile-base]
+
+alias=all:
+  tasks:
+    - runtime
+    - runtime-ci
+    - clang-tools
+    - compile-clang
+    - compile-gnu
