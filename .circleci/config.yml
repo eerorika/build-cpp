@@ -22,7 +22,11 @@ jobs:
       - when:
           condition: << parameters.publish >>
           steps:
-            - run: docker push eerorika/build-cpp:runtime
+            - run: |
+                echo "$DOCKERHUB_PASS" \
+                  | docker login -u "$DOCKERHUB_USER" \
+                    --password-stdin
+                docker push eerorika/build-cpp:runtime
 workflows:
   build:
     jobs:
