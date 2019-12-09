@@ -12,6 +12,10 @@ RUN  apt-get update \
       lld-10 \
       make \
       ninja-build \
+  && update-alternatives --install \
+      /usr/bin/lld lld /usr/bin/lld-10 500 \
+  && update-alternatives --install \
+      /usr/bin/ld ld /usr/bin/lld 500 \
   && apt-get clean -y
 
 ENV PATH="/usr/lib/ccache/:${PATH}"
