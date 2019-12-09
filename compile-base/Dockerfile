@@ -7,8 +7,9 @@ RUN  apt-get update \
   && apt-get install --no-install-recommends -y \
       ccache \
       cmake \
+      cppcheck \
       libstdc++-9-dev \
-      lld \
+      lld-10 \
       make \
       ninja-build \
   && apt-get clean -y
@@ -25,6 +26,7 @@ RUN  export buildpkg="python-pip" \
   && pip --no-cache-dir install \
       conan \
       restore-mtime \
+      cppcheck-junit \
   && apt-mark auto $buildpkg \
   && apt-get autoremove -y \
   && apt-get clean -y

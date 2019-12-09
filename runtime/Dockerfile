@@ -19,5 +19,5 @@ RUN  export buildpkg="wget gnupg software-properties-common" \
 RUN  apt-get update \
   && apt-get install --no-install-recommends -y \
     libstdc++6 \
-    libc++1 \
+    libc++1-10 \
   && apt-get clean -y
