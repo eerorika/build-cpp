@@ -5,8 +5,7 @@ version: 2.1
 jobs:
   build:
     parameters:
-      publish:
-        type: boolean
+      publish: { type: boolean }
     # https://circleci.com/docs/2.0/circleci-images/
     docker: [ image: circleci/buildpack-deps:unstable-scm ]
     steps:
@@ -32,9 +31,7 @@ workflows:
     jobs:
       - build:
           publish: true
-          filters:
-            branches: { only: master }
+          filters: { branches: { only: master } }
       - build:
           publish: false
-          filters:
-            branches: { ignore: master }
+          filters: { branches: { ignore: master } }
