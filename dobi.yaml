@@ -14,6 +14,7 @@ image=runtime:
     V_GCC_ARG: '9'
     V_LIBSTD_ARG: '6'
     V_LIBCXX_ARG: '1'
+    LD_ALT_ARG: /usr/bin/lld
 
 image=runtime-ci:
   image: '{project}'

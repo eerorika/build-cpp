@@ -15,7 +15,7 @@ RUN  apt-get update \
   && update-alternatives --install \
       /usr/bin/lld lld /usr/bin/lld-$V_CLANG $ALT_PRIO \
   && update-alternatives --install \
-      /usr/bin/ld  ld  /usr/bin/lld          $ALT_PRIO \
+      /usr/bin/ld  ld  $LD_ALT               $ALT_PRIO \
   && apt-get clean -y
 
 ENV PATH="/usr/lib/ccache/:${PATH}"

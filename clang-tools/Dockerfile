@@ -34,4 +34,5 @@ RUN  apt-get update \
        update-alternatives --install \
          /usr/bin/$i $i /usr/bin/$i-$V_CLANG $ALT_PRIO; \
      done \
-  && apt-get clean -y
+  && apt-get clean -y \
+  && update-alternatives --install /usr/bin/ld ld $LD_ALT $ALT_PRIO \

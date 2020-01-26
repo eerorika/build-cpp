@@ -15,4 +15,5 @@ RUN  apt-get update \
   && update-alternatives --install  /usr/bin/cc  cc  /usr/bin/gcc $ALT_PRIO \
   && update-alternatives --install  /usr/bin/c++ c++ /usr/bin/g++ $ALT_PRIO \
   && apt-get clean -y \
-  && /usr/sbin/update-ccache-symlinks
+  && /usr/sbin/update-ccache-symlinks \
+  && update-alternatives --install /usr/bin/ld   ld  $LD_ALT      $ALT_PRIO \
