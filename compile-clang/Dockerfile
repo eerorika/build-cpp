@@ -3,14 +3,18 @@
 ARG  BASE
 FROM ${BASE}
 
+ARG V_CLANG
+ARG ALT_PRIO=500
+
 RUN  apt-get update \
   && apt-get install --no-install-recommends -y \
-      clang-10 \
+      clang-$V_CLANG \
       libc++-dev \
   && export aliases="clang clang++" \
   && for i in ${aliases}; do \
-       update-alternatives --install  /usr/bin/$i $i /usr/bin/$i-10 500; \
+       update-alternatives --install \
+         /usr/bin/$i $i /usr/bin/$i-$V_CLANG $ALT_PRIO; \
      done \
-  && update-alternatives --install  /usr/bin/cc cc /usr/bin/clang 500 \
-  && update-alternatives --install  /usr/bin/c++ c++ /usr/bin/clang++ 500 \
+  && update-alternatives --install /usr/bin/cc  cc  /usr/bin/clang   $ALT_PRIO \
+  && update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ $ALT_PRIO \
   && /usr/sbin/update-ccache-symlinks

@@ -3,19 +3,23 @@
 ARG  BASE
 FROM ${BASE}
 
+ARG V_CLANG
+ARG V_GCC
+ARG ALT_PRIO=500
+
 RUN  apt-get update \
   && apt-get install --no-install-recommends -y \
       ccache \
       cmake \
       cppcheck \
-      libstdc++-9-dev \
-      lld-10 \
+      libstdc++-$V_GCC-dev \
+      lld-$V_CLANG \
       make \
       ninja-build \
   && update-alternatives --install \
-      /usr/bin/lld lld /usr/bin/lld-10 500 \
+      /usr/bin/lld lld /usr/bin/lld-$V_CLANG $ALT_PRIO \
   && update-alternatives --install \
-      /usr/bin/ld ld /usr/bin/lld 500 \
+      /usr/bin/ld  ld  /usr/bin/lld          $ALT_PRIO \
   && apt-get clean -y
 
 ENV PATH="/usr/lib/ccache/:${PATH}"
@@ -30,6 +34,7 @@ RUN  export buildpkg="python-pip" \
   && pip --no-cache-dir install \
       conan \
       restore-mtime \
+      pullrequest \
       cppcheck-junit \
   && apt-mark auto $buildpkg \
   && apt-get autoremove -y \

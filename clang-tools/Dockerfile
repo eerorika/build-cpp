@@ -3,14 +3,17 @@
 ARG  BASE
 FROM ${BASE}
 
+ARG V_CLANG
+ARG ALT_PRIO=500
+
 RUN  apt-get update \
   && apt-get install --no-install-recommends -y \
-      clang-format-10 \
-      clang-tidy-10 \
-      clang-tools-10 \
+      clang-format-$V_CLANG \
+      clang-tidy-$V_CLANG \
+      clang-tools-$V_CLANG \
   && update-alternatives --install \
-      /usr/bin/clang-tidy-diff-10 clang-tidy-diff-10 \
-      /usr/bin/clang-tidy-diff-10.py 500 \
+      /usr/bin/clang-tidy-diff-$V_CLANG clang-tidy-diff-$V_CLANG \
+      /usr/bin/clang-tidy-diff-$V_CLANG.py $ALT_PRIO \
   && export aliases="\
       clang-format \
       clang-format-diff \
@@ -31,6 +34,7 @@ RUN  apt-get update \
       clang-reorder-fields \
       " \
   && for i in ${aliases}; do \
-       update-alternatives --install /usr/bin/$i $i /usr/bin/$i-10 500; \
+       update-alternatives --install \
+         /usr/bin/$i $i /usr/bin/$i-$V_CLANG $ALT_PRIO; \
      done \
   && apt-get clean -y
