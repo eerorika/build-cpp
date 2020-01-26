@@ -3,10 +3,6 @@
 ARG  BASE
 FROM ${BASE}
 
-ARG V_CLANG
-ARG V_GCC
-ARG ALT_PRIO=500
-
 RUN  apt-get update \
   && apt-get install --no-install-recommends -y \
       ccache \

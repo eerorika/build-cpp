@@ -10,9 +10,10 @@ image=runtime:
   context: runtime
   args:
     BASE: 'debian:unstable-slim'
-    APT_DISTRO: unstable
-    V_LIBSTD: '6'
-    V_CLANG: '11'
+    V_CLANG_ARG: '11'
+    V_GCC_ARG: '9'
+    V_LIBSTD_ARG: '6'
+    V_LIBCXX_ARG: '1'
 
 image=runtime-ci:
   image: '{project}'
@@ -28,8 +29,6 @@ image=compile-base:
   context: compile-base
   args:
     BASE: '{project}:runtime-ci'
-    V_CLANG: '11'
-    V_GCC: '9'
   depends: [runtime-ci]
 
 image=clang-tools:
@@ -38,7 +37,6 @@ image=clang-tools:
   context: clang-tools
   args:
     BASE: '{project}:compile-base'
-    V_CLANG: '11'
   depends: [compile-base]
 
 image=compile-clang:
@@ -47,7 +45,6 @@ image=compile-clang:
   context: compile-clang
   args:
     BASE: '{project}:clang-tools'
-    V_CLANG: '11'
   depends: [clang-tools]
 
 image=compile-gnu:
@@ -56,7 +53,6 @@ image=compile-gnu:
   context: compile-gnu
   args:
     BASE: '{project}:compile-base'
-    V_GCC: '9'
   depends: [compile-base]
 
 alias=all:
