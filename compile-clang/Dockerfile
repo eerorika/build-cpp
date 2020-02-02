@@ -16,3 +16,4 @@ RUN  apt-get update \
   && update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ $ALT_PRIO \
   && /usr/sbin/update-ccache-symlinks \
   && update-alternatives --install /usr/bin/ld  ld  $LD_ALT          $ALT_PRIO \
+  && echo "compiler: { clang: { version: ['$V_CLANG']}}" > conan-settings

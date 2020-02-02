@@ -29,6 +29,7 @@ RUN  export buildpkg="python-pip" \
       wheel \
   && pip --no-cache-dir install \
       conan \
+      conan-settings \
       restore-mtime \
       pullrequest \
       cppcheck-junit \
