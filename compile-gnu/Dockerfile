@@ -17,4 +17,4 @@ RUN  apt-get update \
   && apt-get clean -y \
   && /usr/sbin/update-ccache-symlinks \
   && update-alternatives --install /usr/bin/ld   ld  $LD_ALT      $ALT_PRIO \
-  && echo "compiler: { gcc: { version: ['$V_GCC']}}" > conan-settings
+  && echo "compiler: { gcc: { version: ['$V_GCC']}}" | conan-settings
