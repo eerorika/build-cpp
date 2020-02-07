@@ -12,13 +12,11 @@ RUN  apt-get update \
       lld-$V_CLANG \
       make \
       ninja-build \
-  && update-alternatives --install \
-      /usr/bin/lld lld /usr/bin/lld-$V_CLANG $ALT_PRIO \
-  && update-alternatives --install \
-      /usr/bin/ld  ld  $LD_ALT               $ALT_PRIO \
   && apt-get clean -y
 
 ENV PATH="/usr/lib/ccache/:${PATH}"
+
+ADD configure-build-env.sh /usr/local/bin/
 
 RUN  export buildpkg="python-pip" \
   && apt-get install --no-install-recommends -y \
@@ -33,6 +31,9 @@ RUN  export buildpkg="python-pip" \
       restore-mtime \
       pullrequest \
       cppcheck-junit \
+  && rm -rf ~/.cache/pip /tmp/pip_build_$USER /tmp/pip_build_$USER \
   && apt-mark auto $buildpkg \
   && apt-get autoremove -y \
-  && apt-get clean -y
+  && apt-get clean -y \
+  && chmod u+x /usr/local/bin/configure-build-env.sh \
+  && configure-build-env.sh
