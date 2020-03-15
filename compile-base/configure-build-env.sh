@@ -61,7 +61,7 @@ if [ -n "$V_CLANG" ]; then
 	set_clang_py_link run-clang-tidy
 	set_clang_py_link run-find-all-symbols
 	set_alt_version \
-		$V_CLANG \
+		"$V_CLANG" \
 		clang \
 			bugpoint \
 			clang++ \
@@ -168,7 +168,7 @@ if [ -n "$V_GCC" ]; then
 		echo "compiler: { gcc: { version: ['$V_GCC' ]}}" | conan-settings
 	fi
 	set_alt_version \
-		$V_GCC \
+		"$V_GCC" \
 		gcc \
 			g++ \
 			gcc-ar \
