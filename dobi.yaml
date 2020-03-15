@@ -11,7 +11,7 @@ image=runtime:
   args:
     BASE: 'debian:unstable-slim'
     V_CLANG_ARG: '11'
-    V_GCC_ARG: '9'
+    V_GCC_ARG: '10'
     V_LIBSTD_ARG: '6'
     V_LIBCXX_ARG: '1'
     LD_ALT_ARG: /usr/bin/lld
