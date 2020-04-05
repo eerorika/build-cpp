@@ -9,7 +9,6 @@ RUN  apt-get update \
       cmake \
       cppcheck \
       libstdc++-$V_GCC-dev \
-      lld-$V_CLANG \
       make \
       ninja-build \
   && apt-get clean -y

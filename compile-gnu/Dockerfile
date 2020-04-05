@@ -3,6 +3,13 @@
 ARG  BASE
 FROM ${BASE}
 
+ENV CC_ALT=gcc \
+    CXX_ALT=g++ \
+    LD_ALT=gold \
+    AR_ALT=gcc-ar \
+    NM_ALT=gcc-nm \
+    RANLIB_ALT=gcc-ranlib
+
 RUN  apt-get update \
   && apt-get install --no-install-recommends -y \
       g++-$V_GCC \

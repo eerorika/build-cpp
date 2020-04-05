@@ -3,6 +3,14 @@
 ARG  BASE
 FROM ${BASE}
 
+ENV CC_ALT=clang \
+    CXX_ALT=clang++ \
+    LD_ALT=lld \
+    AR_ALT=llvm-ar \
+    NM_ALT=llvm-nm \
+    RANLIB_ALT=llvm-ranlib \
+    CLANG_DEFAULT_CXX_STDLIB=libc++
+
 RUN  apt-get update \
   && apt-get install --no-install-recommends -y \
       clang-$V_CLANG \
