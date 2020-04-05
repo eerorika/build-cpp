@@ -18,14 +18,15 @@ ENV PATH="/usr/lib/ccache/:${PATH}"
 
 ADD configure-build-env.sh /usr/local/bin/
 
-RUN  export buildpkg="python-pip" \
+RUN  export buildpkg="python3-pip" \
   && apt-get install --no-install-recommends -y \
       $buildpkg \
-      python \
-  && pip --no-cache-dir install \
+      python3-minimal \
+      python3-distutils \
+  && pip3 --no-cache-dir install \
       setuptools \
       wheel \
-  && pip --no-cache-dir install \
+  && pip3 --no-cache-dir install \
       conan \
       conan-settings \
       restore-mtime \
