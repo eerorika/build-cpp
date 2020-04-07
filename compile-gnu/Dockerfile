@@ -8,7 +8,8 @@ ENV CC_ALT=gcc \
     LD_ALT=gold \
     AR_ALT=gcc-ar \
     NM_ALT=gcc-nm \
-    RANLIB_ALT=gcc-ranlib
+    RANLIB_ALT=gcc-ranlib \
+    LIBCXX_ALT=libstdc++11
 
 RUN  apt-get update \
   && apt-get install --no-install-recommends -y \

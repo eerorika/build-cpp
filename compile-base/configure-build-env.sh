@@ -48,6 +48,8 @@ set_clang_py_link() {
 	fi
 }
 
+conan profile new default --detect
+
 if [ -n "$V_CLANG" ]; then
 	if command -v conan-settings > /dev/null; then
 		echo "compiler: { clang: { version: ['$V_CLANG']}}" | conan-settings
@@ -187,6 +189,10 @@ if [ -n "$V_CLANG" ]; then
 			yaml-bench \
 			yaml2obj \
 			tblgen
+	if [ "$CC_ALT" = "clang" ]; then
+		conan profile update "settings.compiler=clang" default
+		conan profile update "settings.compiler.version=$V_CLANG" default
+	fi
 fi
 if [ -n "$V_GCC" ]; then
 	if command -v conan-settings > /dev/null; then
@@ -212,6 +218,10 @@ if [ -n "$V_GCC" ]; then
 			"$target-gnu-gcov" \
 			"$target-gnu-gcov-dump" \
 			"$target-gnu-gcov-tool"
+	if [ "$CC_ALT" = "gcc" ]; then
+		conan profile update "settings.compiler=gcc" default
+		conan profile update "settings.compiler.version=$V_GCC" default
+	fi
 fi
 
 if [ -n "$CC_ALT" ]; then
@@ -231,4 +241,7 @@ if [ -n "$NM_ALT" ]; then
 fi
 if [ -n "$RANLIB_ALT" ]; then
 	set_alt /usr/bin/ranlib "$RANLIB_ALT"
+fi
+if [ -n "$LIBCXX_ALT" ]; then
+	conan profile update "settings.compiler.libcxx=$LIBCXX_ALT" default
 fi

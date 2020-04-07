@@ -8,7 +8,6 @@ RUN  apt-get update \
       ccache \
       cmake \
       cppcheck \
-      libstdc++-$V_GCC-dev \
       make \
       ninja-build \
   && apt-get clean -y

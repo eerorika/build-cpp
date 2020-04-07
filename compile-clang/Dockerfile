@@ -9,7 +9,8 @@ ENV CC_ALT=clang \
     AR_ALT=llvm-ar \
     NM_ALT=llvm-nm \
     RANLIB_ALT=llvm-ranlib \
-    CLANG_DEFAULT_CXX_STDLIB=libc++
+    CLANG_DEFAULT_CXX_STDLIB=libc++ \
+    LIBCXX_ALT=libc++
 
 RUN  apt-get update \
   && apt-get install --no-install-recommends -y \
