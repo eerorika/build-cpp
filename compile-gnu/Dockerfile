@@ -16,4 +16,5 @@ RUN  apt-get update \
       g++-$V_GCC \
       gcc-$V_GCC \
   && apt-get clean -y \
-  && configure-build-env.sh
+  && configure-build-env.sh \
+  && /usr/sbin/update-ccache-symlinks

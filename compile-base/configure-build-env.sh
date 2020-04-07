@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
 
-/usr/sbin/update-ccache-symlinks
-
 alt_prio=${ALT_PRIO:-500}
 set_alt() {
 	path="$1"

@@ -16,4 +16,5 @@ RUN  apt-get update \
   && apt-get install --no-install-recommends -y \
       clang-$V_CLANG \
       libc++-$V_CLANG-dev \
-  && configure-build-env.sh
+  && configure-build-env.sh \
+  && /usr/sbin/update-ccache-symlinks
