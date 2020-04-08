@@ -6,7 +6,8 @@ FROM ${BASE}
 RUN  apt-get update \
   && apt-get install --no-install-recommends -y \
       clang-$V_CLANG \
-      libc++-$V_CLANG-dev
+      libc++-$V_CLANG-dev \
+      libc++abi$V_LIBCXX_ARG-$V_CLANG-dev
 
 ENV CC_ALT=clang \
     CXX_ALT=clang++ \
