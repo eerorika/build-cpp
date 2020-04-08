@@ -3,18 +3,6 @@
 ARG  BASE
 FROM ${BASE}
 
-ARG V_CLANG_ARG
-ARG V_GCC_ARG
-ARG V_LIBSTD_ARG
-ARG V_LIBCXX_ARG
-ARG ALT_PRIO_ARG=500
-
-ENV V_CLANG=$V_CLANG_ARG \
-    V_GCC=$V_GCC_ARG \
-    V_LIBSTD=$V_LIBSTD_ARG \
-    V_LIBCXX=$V_LIBCXX_ARG \
-    ALT_PRIO=$ALT_PRIO_ARG
-
 USER root:root
 
 RUN export distro=$( \
@@ -34,6 +22,18 @@ RUN export distro=$( \
   && apt-mark auto $buildpkg \
   && apt-get autoremove -y \
   && apt-get clean -y
+
+ARG V_CLANG_ARG
+ARG V_GCC_ARG
+ARG V_LIBSTD_ARG
+ARG V_LIBCXX_ARG
+ARG ALT_PRIO_ARG=500
+
+ENV V_CLANG=$V_CLANG_ARG \
+    V_GCC=$V_GCC_ARG \
+    V_LIBSTD=$V_LIBSTD_ARG \
+    V_LIBCXX=$V_LIBCXX_ARG \
+    ALT_PRIO=$ALT_PRIO_ARG
 
 RUN  apt-get update \
   && apt-get install --no-install-recommends -y \
