@@ -30,7 +30,6 @@ RUN  apt-get update \
   && apt-get autoremove -y \
   && apt-get clean -y
 
-ENV PATH="/usr/lib/ccache/:${PATH}"
 ADD configure-build-env.sh /usr/local/bin/
 
 RUN  chmod u+x /usr/local/bin/configure-build-env.sh \

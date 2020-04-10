@@ -15,7 +15,6 @@ ENV CC_ALT=gcc \
     AR_ALT=gcc-ar \
     NM_ALT=gcc-nm \
     RANLIB_ALT=gcc-ranlib \
-    LIBCXX_ALT=libstdc++11
+    CONAN_LIBCXX_ALT=libstdc++11
 
-RUN  configure-build-env.sh \
-  && /usr/sbin/update-ccache-symlinks
+RUN  configure-build-env.sh

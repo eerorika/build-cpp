@@ -39,13 +39,29 @@ image=clang-tools:
     BASE: '{project}:compile-base'
   depends: [compile-base]
 
-image=compile-clang:
+image=compile-clang-base:
   image: '{project}'
-  tags: [compile-clang]
-  context: compile-clang
+  tags: [compile-clang-base]
+  context: compile-clang-base
   args:
     BASE: '{project}:clang-tools'
   depends: [clang-tools]
+
+image=compile-clang-lcxx:
+  image: '{project}'
+  tags: [compile-clang-lcxx]
+  context: compile-clang-lcxx
+  args:
+    BASE: '{project}:compile-clang-base'
+  depends: [compile-clang-base]
+
+image=compile-clang-lstdcxx:
+  image: '{project}'
+  tags: [compile-clang-lstdcxx]
+  context: compile-clang-lstdcxx
+  args:
+    BASE: '{project}:compile-clang-base'
+  depends: [compile-clang-base]
 
 image=compile-gnu:
   image: '{project}'
@@ -60,5 +76,6 @@ alias=all:
     - runtime
     - runtime-ci
     - clang-tools
-    - compile-clang
+    - compile-clang-lcxx
+    - compile-clang-lstdcxx
     - compile-gnu

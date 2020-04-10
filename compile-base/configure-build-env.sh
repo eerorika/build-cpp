@@ -21,7 +21,7 @@ set_alt_version() {
 	shift
 	slaves=""
 	for i; do
-		alt=$(command -v "/usr/bin/$i-$version")
+		alt="/usr/bin/$i-$version"
 		if [ -x "$alt" ]; then
 			slaves="$slaves --slave /usr/bin/$i $i $alt"
 			if [ -L "/etc/alternatives/$i" ]; then
@@ -46,7 +46,7 @@ set_clang_py_link() {
 	fi
 }
 
-conan profile new default --detect
+conan profile new default --detect 2> /dev/null
 
 if [ -n "$V_CLANG" ]; then
 	if command -v conan-settings > /dev/null; then
@@ -191,6 +191,12 @@ if [ -n "$V_CLANG" ]; then
 		conan profile update "settings.compiler=clang" default
 		conan profile update "settings.compiler.version=$V_CLANG" default
 	fi
+	if command -v ccache; then
+		ln -sf /usr/bin/ccachee /usr/local/bin/clangcc
+		ln -sf /usr/bin/ccachee /usr/local/bin/clang++
+		ln -sf /usr/bin/ccachee "/usr/local/bin/clangcc-$V_CLANG"
+		ln -sf /usr/bin/ccachee "/usr/local/bin/clang++-$V_CLANG"
+	fi
 fi
 if [ -n "$V_GCC" ]; then
 	if command -v conan-settings > /dev/null; then
@@ -220,6 +226,12 @@ if [ -n "$V_GCC" ]; then
 		conan profile update "settings.compiler=gcc" default
 		conan profile update "settings.compiler.version=$V_GCC" default
 	fi
+	if command -v ccache; then
+		ln -sf /usr/bin/ccachee /usr/local/bin/gcc
+		ln -sf /usr/bin/ccachee /usr/local/bin/g++
+		ln -sf /usr/bin/ccachee "/usr/local/bin/gcc-$V_GCC"
+		ln -sf /usr/bin/ccachee "/usr/local/bin/g++-$V_GCC"
+	fi
 fi
 
 if [ -n "$CC_ALT" ]; then
@@ -240,6 +252,11 @@ fi
 if [ -n "$RANLIB_ALT" ]; then
 	set_alt /usr/bin/ranlib "$RANLIB_ALT"
 fi
-if [ -n "$LIBCXX_ALT" ]; then
-	conan profile update "settings.compiler.libcxx=$LIBCXX_ALT" default
+if [ -n "$CONAN_LIBCXX_ALT" ]; then
+	conan profile update "settings.compiler.libcxx=$CONAN_LIBCXX_ALT" default
+fi
+
+if command -v ccache; then
+	ln -sf /usr/bin/ccachee /usr/local/bin/cc
+	ln -sf /usr/bin/ccachee /usr/local/bin/c++
 fi
