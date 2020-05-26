@@ -227,10 +227,10 @@ if [ -n "$V_GCC" ]; then
 		conan profile update "settings.compiler.version=$V_GCC" default
 	fi
 	if command -v ccache; then
-		ln -sf /usr/bin/ccachee /usr/local/bin/gcc
-		ln -sf /usr/bin/ccachee /usr/local/bin/g++
-		ln -sf /usr/bin/ccachee "/usr/local/bin/gcc-$V_GCC"
-		ln -sf /usr/bin/ccachee "/usr/local/bin/g++-$V_GCC"
+		ln -sf /usr/bin/ccache /usr/local/bin/gcc
+		ln -sf /usr/bin/ccache /usr/local/bin/g++
+		ln -sf /usr/bin/ccache "/usr/local/bin/gcc-$V_GCC"
+		ln -sf /usr/bin/ccache "/usr/local/bin/g++-$V_GCC"
 	fi
 fi
 
