@@ -192,10 +192,10 @@ if [ -n "$V_CLANG" ]; then
 		conan profile update "settings.compiler.version=$V_CLANG" default
 	fi
 	if command -v ccache; then
-		ln -sf /usr/bin/ccachee /usr/local/bin/clangcc
-		ln -sf /usr/bin/ccachee /usr/local/bin/clang++
-		ln -sf /usr/bin/ccachee "/usr/local/bin/clangcc-$V_CLANG"
-		ln -sf /usr/bin/ccachee "/usr/local/bin/clang++-$V_CLANG"
+		ln -sf /usr/bin/ccache /usr/local/bin/clangcc
+		ln -sf /usr/bin/ccache /usr/local/bin/clang++
+		ln -sf /usr/bin/ccache "/usr/local/bin/clangcc-$V_CLANG"
+		ln -sf /usr/bin/ccache "/usr/local/bin/clang++-$V_CLANG"
 	fi
 fi
 if [ -n "$V_GCC" ]; then
