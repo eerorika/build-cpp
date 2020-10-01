@@ -14,7 +14,8 @@ ENV CLANG_DEFAULT_CXX_STDLIB=libc++ \
     CXXFLAGS="$CXXFLAGS -stdlib=libc++"
 
 RUN  config-build-env.sh \
-  && config-conan.sh
+  && config-conan.sh \
+  && config-ccache.sh
 
 USER 1000:1000
 

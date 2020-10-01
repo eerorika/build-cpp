@@ -19,7 +19,6 @@ ENV CC_ALT=clang \
     RANLIB_ALT=llvm-ranlib
 
 RUN  config-build-env.sh \
-  && config-ccache.sh \
   && config-conan.sh
 
 USER 1000:1000

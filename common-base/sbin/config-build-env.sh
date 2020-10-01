@@ -50,9 +50,9 @@ set_alt_version() {
         alt="$usr/bin/$master-$version"
         if [ -x "$alt" ]; then
             for i; do
-                alt="$usr/bin/$i-$version"
-                if [ -x "$alt" ]; then
-                    slaves="$slaves --slave $usr/bin/$i $i $alt"
+                slave_alt="$usr/bin/$i-$version"
+                if [ -x "$slave_alt" ]; then
+                    slaves="$slaves --slave $usr/bin/$i $i $slave_alt"
                     if [ -L "/etc/alternatives/$i" ]; then
                         update-alternatives --remove-all "$i" 2> /dev/null
                     fi
