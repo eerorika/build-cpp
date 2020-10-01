@@ -1,12 +1,38 @@
 #!/usr/bin/env sh
 
-alt_prio=${ALT_PRIO:-500}
+# default to current compiler version
+if [ -z "$V_CLANG" ] && command -v clang 2> /dev/null; then
+	current=$(clang --version \
+		| head -1 \
+		| grep --only-matching 'version [[:digit:]]\+' \
+		| grep --only-matching '[[:digit:]]\+' \
+		| head -1)
+	if [ -n "$current" ] && command -v "clang-$current"; then
+		echo "defaulting to clang version $current"
+		export V_CLANG=$current
+	fi
+fi
+if [ -z "$V_GCC" ] && command -v gcc 2> /dev/null; then
+	current=$(gcc --version \
+		| head -1 \
+		| cut --delimiter=' ' --fields=4 \
+		| grep --only-matching '[[:digit:]]\+' \
+		| head -1)
+	if [ -n "$current" ] && command -v "gcc-$current"; then
+		echo "defaulting to gcc version $current"
+		export V_GCC=$current
+	fi
+fi
+
+usrs="/usr/local /usr"
+
 set_alt() {
+	alt_prio=${ALT_PRIO:-500}
 	path="$1"
 	alt=$(command -v "$2")
 	cmd=$(basename "$path")
 	slaves="$3"
-	if [ -x "$alt" ]; then
+	if [ -n "$alt" ] && [ -x "$alt" ]; then
 		# shellcheck disable=SC2086
 		update-alternatives \
 			--install "$path" "$cmd" "$alt" "$alt_prio" $slaves
@@ -20,38 +46,40 @@ set_alt_version() {
 	shift
 	shift
 	slaves=""
-	for i; do
-		alt="/usr/bin/$i-$version"
-		if [ -x "$alt" ]; then
-			slaves="$slaves --slave /usr/bin/$i $i $alt"
-			if [ -L "/etc/alternatives/$i" ]; then
-				update-alternatives --remove-all "$i" 2> /dev/null
-			fi
-		fi
+	for usr in $usrs; do
+        alt="$usr/bin/$master-$version"
+        if [ -x "$alt" ]; then
+            for i; do
+                alt="$usr/bin/$i-$version"
+                if [ -x "$alt" ]; then
+                    slaves="$slaves --slave $usr/bin/$i $i $alt"
+                    if [ -L "/etc/alternatives/$i" ]; then
+                        update-alternatives --remove-all "$i" 2> /dev/null
+                    fi
+                fi
+            done
+            set_alt "$usr/bin/$master" "$alt" "$slaves"
+            break
+        fi
     done
-    set_alt "/usr/bin/$master" "/usr/bin/$master-$version" "$slaves"
 }
-
 set_clang_py_link() {
 	cmd="$1"
-	path="/usr/bin/$cmd-$V_CLANG"
-	if [ ! -f "$path" ]; then
-		if [ -x "/usr/bin/$cmd-$V_CLANG.py" ]; then
-			ln -s "/usr/bin/$cmd-$V_CLANG.py" "$path"
-		elif [ -x "/usr/lib/llvm-$V_CLANG/share/clang/$cmd.py" ]; then
-			ln -s "/usr/lib/llvm-$V_CLANG/share/clang/$cmd.py" "$path"
-		elif [ -x "/usr/share/clang/clang-format-$V_CLANG/$cmd.py" ]; then
-			ln -s "/usr/share/clang/clang-format-$V_CLANG/$cmd.py" "$path"
-		fi
-	fi
+	for usr in $usrs; do
+	    path="$usr/bin/$cmd-$V_CLANG"
+        if [ ! -f "$path" ]; then
+            if [ -x "$usr/bin/$cmd-$V_CLANG.py" ]; then
+                ln -s "$usr/bin/$cmd-$V_CLANG.py" "$path"
+            elif [ -x "$usr/lib/llvm-$V_CLANG/share/clang/$cmd.py" ]; then
+                ln -s "$usr/lib/llvm-$V_CLANG/share/clang/$cmd.py" "$path"
+            elif [ -x "$usr/share/clang/clang-format-$V_CLANG/$cmd.py" ]; then
+                ln -s "$usr/share/clang/clang-format-$V_CLANG/$cmd.py" "$path"
+            fi
+        fi
+    done
 }
 
-conan profile new default --detect 2> /dev/null
-
 if [ -n "$V_CLANG" ]; then
-	if command -v conan-settings > /dev/null; then
-		echo "compiler: { clang: { version: ['$V_CLANG']}}" | conan-settings
-	fi
 	set_clang_py_link clang-format
 	set_clang_py_link clang-format-diff
 	set_clang_py_link clang-format-sublime
@@ -182,26 +210,14 @@ if [ -n "$V_CLANG" ]; then
 			scan-build-py \
 			scan-build-view \
 			scan-view \
+			split-file \
 			verify-uselistorder \
 			wasm-ld \
 			yaml-bench \
 			yaml2obj \
 			tblgen
-	if [ "$CC_ALT" = "clang" ]; then
-		conan profile update "settings.compiler=clang" default
-		conan profile update "settings.compiler.version=$V_CLANG" default
-	fi
-	if command -v ccache; then
-		ln -sf /usr/bin/ccache /usr/local/bin/clangcc
-		ln -sf /usr/bin/ccache /usr/local/bin/clang++
-		ln -sf /usr/bin/ccache "/usr/local/bin/clangcc-$V_CLANG"
-		ln -sf /usr/bin/ccache "/usr/local/bin/clang++-$V_CLANG"
-	fi
 fi
 if [ -n "$V_GCC" ]; then
-	if command -v conan-settings > /dev/null; then
-		echo "compiler: { gcc: { version: ['$V_GCC' ]}}" | conan-settings
-	fi
 	target="$(echo "$(uname -m)-$(uname -s)" | tr '[:upper:]' '[:lower:]')"
 	set_alt_version \
 		"$V_GCC" \
@@ -222,41 +238,24 @@ if [ -n "$V_GCC" ]; then
 			"$target-gnu-gcov" \
 			"$target-gnu-gcov-dump" \
 			"$target-gnu-gcov-tool"
-	if [ "$CC_ALT" = "gcc" ]; then
-		conan profile update "settings.compiler=gcc" default
-		conan profile update "settings.compiler.version=$V_GCC" default
-	fi
-	if command -v ccache; then
-		ln -sf /usr/bin/ccache /usr/local/bin/gcc
-		ln -sf /usr/bin/ccache /usr/local/bin/g++
-		ln -sf /usr/bin/ccache "/usr/local/bin/gcc-$V_GCC"
-		ln -sf /usr/bin/ccache "/usr/local/bin/g++-$V_GCC"
-	fi
 fi
+
 
 if [ -n "$CC_ALT" ]; then
-	set_alt /usr/bin/cc "$CC_ALT"
+    set_alt "/usr/bin/cc" "$CC_ALT"
 fi
 if [ -n "$CXX_ALT" ]; then
-	set_alt /usr/bin/c++ "$CXX_ALT"
+    set_alt "/usr/bin/c++" "$CXX_ALT"
 fi
 if [ -x "$LD_ALT" ]; then
-	set_alt /usr/bin/ld "$LD_ALT"
+    set_alt "/usr/bin/ld" "$LD_ALT"
 fi
 if [ -n "$AR_ALT" ]; then
-	set_alt /usr/bin/ar "$AR_ALT"
+    set_alt "/usr/bin/ar" "$AR_ALT"
 fi
 if [ -n "$NM_ALT" ]; then
-	set_alt /usr/bin/nm "$NM_ALT"
+    set_alt "/usr/bin/nm" "$NM_ALT"
 fi
 if [ -n "$RANLIB_ALT" ]; then
-	set_alt /usr/bin/ranlib "$RANLIB_ALT"
-fi
-if [ -n "$CONAN_LIBCXX_ALT" ]; then
-	conan profile update "settings.compiler.libcxx=$CONAN_LIBCXX_ALT" default
-fi
-
-if command -v ccache; then
-	ln -sf /usr/bin/ccachee /usr/local/bin/cc
-	ln -sf /usr/bin/ccachee /usr/local/bin/c++
+    set_alt "/usr/bin/ranlib" "$RANLIB_ALT"
 fi

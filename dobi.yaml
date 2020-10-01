@@ -4,78 +4,84 @@ meta:
   project: eerorika/build-cpp
   default: all
 
-image=runtime:
+image=gcc-10-base:
   image: '{project}'
-  tags: [runtime]
-  context: runtime
+  tags: [gcc-10-base]
+  context: common-base
+  args:
+    BASE: 'gcc:10'
+
+image=gcc-10:
+  image: '{project}'
+  tags: [gcc-10, gcc]
+  context: gcc
+  args:
+    BASE: '{project}:gcc-10-base'
+  depends: [gcc-10-base]
+
+image=apt-llvm-12:
+  image: '{project}'
+  tags: [apt-llvm-12]
+  context: apt-llvm
   args:
     BASE: 'debian:unstable-slim'
-    V_CLANG_ARG: '11'
-    V_GCC_ARG: '10'
-    V_LIBSTD_ARG: '6'
-    V_LIBCXX_ARG: '1'
+    V_CLANG: '12'
 
-image=runtime-ci:
+image=runtime-12:
   image: '{project}'
-  tags: [runtime-ci]
-  context: runtime-ci
+  tags: [runtime-12, runtime]
+  context: runtime
   args:
-    BASE: '{project}:runtime'
-  depends: [runtime]
+    BASE: '{project}:apt-llvm-12'
+    V_LIBSTD: '6'
+    V_LIBCXX: '1'
+  depends: [apt-llvm-12]
 
-image=compile-base:
+image=clang-base-12:
   image: '{project}'
-  tags: [compile-base]
-  context: compile-base
+  tags: [clang-base-12]
+  context: common-base
   args:
-    BASE: '{project}:runtime-ci'
-  depends: [runtime-ci]
+    BASE: '{project}:runtime-12'
+  depends: [runtime-12]
 
-image=clang-tools:
+image=clang-tools-12:
   image: '{project}'
-  tags: [clang-tools]
+  tags: [clang-tools-12, clang-tools]
   context: clang-tools
   args:
-    BASE: '{project}:compile-base'
-  depends: [compile-base]
+    BASE: '{project}:clang-base-12'
+  depends: [clang-base-12]
 
-image=compile-clang-base:
+image=clang-compile-base-12:
   image: '{project}'
-  tags: [compile-clang-base]
-  context: compile-clang-base
+  tags: [clang-compile-base-12]
+  context: clang-base
   args:
-    BASE: '{project}:clang-tools'
-  depends: [clang-tools]
+    BASE: '{project}:clang-tools-12'
+  depends: [clang-tools-12]
 
-image=compile-clang-lcxx:
+image=compile-clang-lcxx-12:
   image: '{project}'
-  tags: [compile-clang-lcxx]
-  context: compile-clang-lcxx
+  tags: [clang-lcxx-12, clang-lcxx]
+  context: clang-lcxx
   args:
-    BASE: '{project}:compile-clang-base'
-  depends: [compile-clang-base]
+    BASE: '{project}:clang-compile-base-12'
+  depends: [clang-compile-base-12]
 
-image=compile-clang-lstdcxx:
+image=compile-clang-lstdcxx-12:
   image: '{project}'
-  tags: [compile-clang-lstdcxx]
-  context: compile-clang-lstdcxx
+  tags: [clang-lstdcxx-12, clang-lstdcxx]
+  context: clang-lstdcxx
   args:
-    BASE: '{project}:compile-clang-base'
-  depends: [compile-clang-base]
-
-image=compile-gnu:
-  image: '{project}'
-  tags: [compile-gnu]
-  context: compile-gnu
-  args:
-    BASE: '{project}:compile-base'
-  depends: [compile-base]
+    BASE: '{project}:clang-compile-base-12'
+    V_GCC: '10'
+  depends: [clang-compile-base-12]
 
 alias=all:
   tasks:
-    - runtime
-    - runtime-ci
-    - clang-tools
-    - compile-clang-lcxx
-    - compile-clang-lstdcxx
-    - compile-gnu
+    - gcc-10
+    - runtime-12
+    - clang-tools-12
+    - compile-clang-lcxx-12
+    - compile-clang-lstdcxx-12

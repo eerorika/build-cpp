@@ -3,14 +3,22 @@
 ARG  BASE
 FROM ${BASE}
 
+USER root:root
+
 RUN  apt-get update \
   && apt-get install --no-install-recommends -y \
+      # general CI
+      ca-certificates \
+      git \
+      gzip \
+      openssh-client \
+      tar \
+      # C and C++
       ccache \
       cmake \
       cppcheck \
       make \
       ninja-build \
-  && apt-get clean -y \
   && export buildpkg="python3-pip" \
   && apt-get install --no-install-recommends -y \
       $buildpkg \
@@ -28,9 +36,15 @@ RUN  apt-get update \
   && rm -rf ~/.cache/pip /tmp/pip_build_$USER /tmp/pip_build_$USER \
   && apt-mark auto $buildpkg \
   && apt-get autoremove -y \
-  && apt-get clean -y
+  && apt-get clean -y \
+  && adduser \
+      --disabled-password \
+      --gecos GECOS \
+      -u 1000 \
+        user
 
-ADD configure-build-env.sh /usr/local/bin/
+ADD sbin /usr/local/bin/
 
-RUN  chmod u+x /usr/local/bin/configure-build-env.sh \
-  && configure-build-env.sh
+RUN chmod a+x /usr/local/bin/config-*.sh
+
+USER 1000:1000
