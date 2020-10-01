@@ -7,9 +7,9 @@ USER root:root
 
 RUN  apt-get update \
   && apt-get install --no-install-recommends -y \
-      clang-$V_CLANG
-      # libstdc++ may be needed
-      #libstdc++-$V_GCC-dev
+      clang-$V_CLANG \
+      # libstdc++ is often needed for dependencies which do not support libc++
+      libstdc++-$V_GCC-dev
 
 ENV CC_ALT=clang \
     CXX_ALT=clang++ \
