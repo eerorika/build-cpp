@@ -5,6 +5,10 @@ FROM ${BASE}
 
 USER root:root
 
+ARG V_GCC
+
+ENV V_GCC=$V_GCC
+
 RUN  apt-get update \
   && apt-get install --no-install-recommends -y \
       clang-$V_CLANG \

@@ -59,6 +59,7 @@ image=clang-compile-base-12:
   context: clang-base
   args:
     BASE: '{project}:clang-tools-12'
+    V_GCC: '10'
   depends: [clang-tools-12]
 
 image=compile-clang-lcxx-12:
@@ -75,7 +76,6 @@ image=compile-clang-lstdcxx-12:
   context: clang-lstdcxx
   args:
     BASE: '{project}:clang-compile-base-12'
-    V_GCC: '10'
   depends: [clang-compile-base-12]
 
 alias=all:
