@@ -3,6 +3,14 @@
 # generate initial config
 conan profile new default --detect 2> /dev/null
 
+# conan.bintray.com is very slow and default timeout is insufficient
+# for searching packages
+conan config set general.request_timeout=$((60 * 5))
+
+if [ -n "$CONAN_CMAKE_GENERATOR" ]; then
+   conan config set general.cmake_generator="$CONAN_CMAKE_GENERATOR"
+fi
+
 if [ -n "$V_CLANG" ]; then
     # add current compiler to conan settings in case it is missing
 	if command -v conan-settings > /dev/null; then

@@ -10,6 +10,7 @@ image=gcc-10-base:
   context: common-base
   args:
     BASE: 'gcc:10'
+    CONAN_CMAKE_GENERATOR: 'Ninja'
 
 image=gcc-10:
   image: '{project}'
@@ -43,6 +44,7 @@ image=clang-base-12:
   context: common-base
   args:
     BASE: '{project}:runtime-12'
+    CONAN_CMAKE_GENERATOR: 'Ninja'
   depends: [runtime-12]
 
 image=clang-tools-12:
