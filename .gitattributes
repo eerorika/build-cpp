@@ -1,0 +1,8 @@
+# https://git-scm.com/docs/gitattributes
+* text=auto
+
+*.sh        text eol=lf
+*.txt       text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+Dockerfile  text eol=lf

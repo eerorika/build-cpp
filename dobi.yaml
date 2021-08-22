@@ -4,86 +4,86 @@ meta:
   project: eerorika/build-cpp
   default: all
 
-image=gcc-10-base:
+image=gcc-11-base:
   image: '{project}'
-  tags: [gcc-10-base]
+  tags: [gcc-11-base]
   context: common-base
   args:
-    BASE: 'gcc:10'
+    BASE: 'gcc:11'
     CONAN_CMAKE_GENERATOR: 'Ninja'
 
-image=gcc-10:
+image=gcc-11:
   image: '{project}'
-  tags: [gcc-10, gcc]
+  tags: [gcc-11, gcc]
   context: gcc
   args:
-    BASE: '{project}:gcc-10-base'
-  depends: [gcc-10-base]
+    BASE: '{project}:gcc-11-base'
+  depends: [gcc-11-base]
 
-image=apt-llvm-12:
+image=apt-llvm-13:
   image: '{project}'
-  tags: [apt-llvm-12]
+  tags: [apt-llvm-13]
   context: apt-llvm
   args:
     BASE: 'debian:unstable-slim'
-    V_CLANG: '12'
+    V_CLANG: '13'
 
-image=runtime-12:
+image=runtime-13:
   image: '{project}'
-  tags: [runtime-12, runtime]
+  tags: [runtime-13, runtime]
   context: runtime
   args:
-    BASE: '{project}:apt-llvm-12'
+    BASE: '{project}:apt-llvm-13'
     V_LIBSTD: '6'
     V_LIBCXX: '1'
-  depends: [apt-llvm-12]
+  depends: [apt-llvm-13]
 
-image=clang-base-12:
+image=clang-base-13:
   image: '{project}'
-  tags: [clang-base-12]
+  tags: [clang-base-13]
   context: common-base
   args:
-    BASE: '{project}:runtime-12'
+    BASE: '{project}:runtime-13'
     CONAN_CMAKE_GENERATOR: 'Ninja'
-  depends: [runtime-12]
+  depends: [runtime-13]
 
-image=clang-tools-12:
+image=clang-tools-13:
   image: '{project}'
-  tags: [clang-tools-12, clang-tools]
+  tags: [clang-tools-13, clang-tools]
   context: clang-tools
   args:
-    BASE: '{project}:clang-base-12'
-  depends: [clang-base-12]
+    BASE: '{project}:clang-base-13'
+  depends: [clang-base-13]
 
-image=clang-compile-base-12:
+image=clang-compile-base-13:
   image: '{project}'
-  tags: [clang-compile-base-12]
+  tags: [clang-compile-base-13]
   context: clang-base
   args:
-    BASE: '{project}:clang-tools-12'
+    BASE: '{project}:clang-tools-13'
     V_GCC: '10'
-  depends: [clang-tools-12]
+  depends: [clang-tools-13]
 
-image=compile-clang-lcxx-12:
+image=compile-clang-lcxx-13:
   image: '{project}'
-  tags: [clang-lcxx-12, clang-lcxx]
+  tags: [clang-lcxx-13, clang-lcxx]
   context: clang-lcxx
   args:
-    BASE: '{project}:clang-compile-base-12'
-  depends: [clang-compile-base-12]
+    BASE: '{project}:clang-compile-base-13'
+  depends: [clang-compile-base-13]
 
-image=compile-clang-lstdcxx-12:
+image=compile-clang-lstdcxx-13:
   image: '{project}'
-  tags: [clang-lstdcxx-12, clang-lstdcxx]
+  tags: [clang-lstdcxx-13, clang-lstdcxx]
   context: clang-lstdcxx
   args:
-    BASE: '{project}:clang-compile-base-12'
-  depends: [clang-compile-base-12]
+    BASE: '{project}:clang-compile-base-13'
+  depends: [clang-compile-base-13]
 
 alias=all:
   tasks:
-    - gcc-10
-    - runtime-12
-    - clang-tools-12
-    - compile-clang-lcxx-12
-    - compile-clang-lstdcxx-12
+    - gcc-11
+    - runtime-13
+    - clang-tools-13
+    - compile-clang-lcxx-13
+    - compile-clang-lstdcxx-13
